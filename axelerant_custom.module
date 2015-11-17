@@ -1,0 +1,105 @@
+<?php
+/**
+ * @file
+ * Axelerant Custom Module file.
+ */
+
+
+/**
+ * Implements hook_menu().
+ */
+function axelerant_custom_menu() {
+  $items = array();
+
+  $items['page_json/%/%node'] = array(
+    'title' => 'Json output of page',
+    'description' => 'return json output of node after validation',
+    'page callback' => 'axelerant_custom_page_json',
+    'page arguments' => array(1, 2),
+    //'access callback' => TRUE,
+    'access callback' => 'axelerant_custom_validate_arguments',
+    'access arguments' => array(1, 2),
+    'file' => 'axelerant_custom.page.inc',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+function axelerant_custom_validate_arguments($site_api_key, $node) {
+  if ($site_api_key != _axelerant_custom_site_api_key()) {
+    return FALSE;
+  }
+
+  if ($node->type != 'page') {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+
+/**
+ * Page callback: return json output of given node.
+ */
+function axelerant_custom_page_json($site_api_key, $node) {
+  drupal_json_output($node);
+  drupal_exit();
+
+}
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function axelerant_custom_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'system_site_information_settings':
+      $form['site_information']['siteapikey'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Site API Key'),
+        '#description' => t('The site api key.'),
+        '#default_value' => variable_get('siteapikey', t('No API Key yet')),
+        '#size' => 20,
+        '#element_validate' => array('_axelerant_custom_validate_site_api_key'),
+      );
+
+      if (_axelerant_custom_site_api_key()) {
+        $form['actions']['submit']['#value'] = t('Update Configuration');
+      }
+
+      $form['#submit'][] = 'axelerant_custom_site_information_submit';
+      dpm($form);
+      break;
+  }
+}
+
+/**
+ * Site api key element validation callback.
+ * @param $element
+ * @param $form_state
+ */
+function _axelerant_custom_validate_site_api_key($element, &$form_state) {
+  if (!empty($element['#value']) && ($element['#value'] == t('No API Key yet') || preg_match('/\s/', $element['#value']))) {
+    form_error($element, t('Enter valid value for the field "!title".', array('!title' => t($element['#title']))));
+  }
+}
+
+
+/**
+ * Submit callback for system_site_information_settings form.
+ * @param $form
+ * @param $form_state
+ */
+function axelerant_custom_site_information_submit($form, &$form_state) {
+  drupal_set_message(t('Site API Key has been saved with value %value', array('%value' => $form_state['values']['siteapikey'])), 'status');
+}
+
+/**
+ * Validate and return the site api key if it's not the default string.
+ * @return bool|null
+ */
+function _axelerant_custom_site_api_key() {
+  $site_api_key = variable_get('siteapikey', t('No API Key yet'));
+  return ($site_api_key != t('No API Key yet')) ? $site_api_key : FALSE;
+}
