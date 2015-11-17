@@ -16,28 +16,28 @@ function axelerant_custom_menu() {
     'description' => 'return json output of node after validation',
     'page callback' => 'axelerant_custom_page_json',
     'page arguments' => array(1, 2),
-    //'access callback' => TRUE,
     'access callback' => 'axelerant_custom_validate_arguments',
     'access arguments' => array(1, 2),
-    'file' => 'axelerant_custom.page.inc',
     'type' => MENU_CALLBACK,
   );
 
   return $items;
 }
 
+/**
+ * Access callback to validate the site api key and node.
+ * @param $site_api_key
+ * @param $node
+ *
+ * @return bool
+ */
 function axelerant_custom_validate_arguments($site_api_key, $node) {
-  if ($site_api_key != _axelerant_custom_site_api_key()) {
-    return FALSE;
-  }
-
-  if ($node->type != 'page') {
+  if ($site_api_key != _axelerant_custom_site_api_key() || ($node->type != 'page')) {
     return FALSE;
   }
 
   return TRUE;
 }
-
 
 /**
  * Page callback: return json output of given node.
@@ -45,9 +45,7 @@ function axelerant_custom_validate_arguments($site_api_key, $node) {
 function axelerant_custom_page_json($site_api_key, $node) {
   drupal_json_output($node);
   drupal_exit();
-
 }
-
 
 /**
  * Implements hook_form_alter().
