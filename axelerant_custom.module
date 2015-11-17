@@ -69,7 +69,6 @@ function axelerant_custom_form_alter(&$form, &$form_state, $form_id) {
       }
 
       $form['#submit'][] = 'axelerant_custom_site_information_submit';
-      dpm($form);
       break;
   }
 }
