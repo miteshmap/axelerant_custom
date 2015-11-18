@@ -12,4 +12,4 @@ settings
 Author
 ------
 Mitesh Patel
-developermitesh@gmail.com
+er.miteshp@gmail.com / developermitesh@gmail.com
