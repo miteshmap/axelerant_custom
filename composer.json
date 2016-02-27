@@ -1,5 +1,5 @@
 {
-  "name": "drupal/axelerant_custom",
+  "name": "miteshmap/axelerant_custom",
   "description": "Provides a user interface for the Token API and some missing core tokens.",
   "type": "drupal-custom",
   "homepage": "https://github.com/miteshmap/axelerant_custom",
