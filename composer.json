@@ -1,7 +1,7 @@
 {
   "name": "miteshmap/axelerant_custom",
   "description": "Provides a user interface for the Token API and some missing core tokens.",
-  "type": "drupal-custom",
+  "type": "drupal-custom-module",
   "homepage": "https://github.com/miteshmap/axelerant_custom",
   "license": "GPL-2.0+"
 }
